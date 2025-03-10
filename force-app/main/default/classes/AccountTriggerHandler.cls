@@ -35,4 +35,18 @@ public with sharing class AccountTriggerHandler {
             update opportunitiesToUpdate;
         }
     }
+
+    // Prevent Deletion Based on Criteria:
+    // Prevent the deletion of Accounts that have associated Cases with a Status of "Open".
+    // Add a custom error message to inform users why the deletion is blocked.
+    public static void preventDeleteAccount(List<Account> accounts) {
+        List<Case> cases = [SELECT Id FROM Case WHERE AccountId IN :accounts AND Status = 'Open'];
+        for (Account account : accounts) {
+            for (Case caseObj : cases) {
+                if (caseObj.AccountId == account.Id) {
+                    account.addError('Cannot delete Account with open Cases.');
+                }
+            }
+        }
+    }
 }
