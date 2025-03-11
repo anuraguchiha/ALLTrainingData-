@@ -49,5 +49,19 @@ public with sharing class AccountTriggerHandler {
             }
         }
     }
-    
+
+    //Prevent Deletion of Records with Attachments: Write a trigger to prevent the deletion of any record that has 
+    //associated attachments. This ensures data integrity for critical records.
+    public static void preventDeletionWithAttachment(Map<Id, Account> oldAccMap) {
+        // Query to find Accounts that have associated Attachments
+        Map<Id, Account> accWithAttachments = new Map<Id, Account>(
+            [SELECT Id FROM Account 
+             WHERE Id IN (SELECT ParentId FROM Attachment WHERE ParentId IN :oldAccMap.keySet())]
+        );
+
+        // Logic to prevent deletion of Accounts with Attachments
+        for (Id accId : accWithAttachments.keySet()) {
+            oldAccMap.get(accId).addError('Cannot delete Account with associated Attachments.');
+        }
+    }
 }

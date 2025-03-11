@@ -8,7 +8,7 @@ public with sharing class AccountTriggerDispatcher {
                  
              }
              when BEFORE_DELETE {
-                 
+                accountTriggerHandler.preventDeletionWithAttachment(Trigger.oldMap);
              }
              when AFTER_INSERT {
                  accountTriggerHandler.casecadeDelete(Trigger.oldMap, Trigger.newMap);
