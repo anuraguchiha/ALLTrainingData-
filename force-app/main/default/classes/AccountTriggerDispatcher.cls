@@ -25,6 +25,6 @@ public with sharing class AccountTriggerDispatcher {
              when else {
                  
              }
-
+        }       
     }
 }
